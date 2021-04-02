@@ -1,0 +1,46 @@
+plugins {
+    id 'java-gradle-plugin'
+    id 'maven-publish'
+    id 'com.gradle.plugin-publish' version '0.14.0'
+}
+
+publishing {
+    repositories {
+        maven {
+            url = 'E:/repo'
+        }
+    }
+}
+
+group 'ch.tie.gradle.plugins'
+version '0.2-SNAPSHOT'
+
+gradlePlugin {
+    plugins {
+        json2mdPlugin {
+            id = 'ch.tie.gradle.plugins.json2md'
+            displayName = 'Json2md'
+            description = 'describe'
+            implementationClass = 'ch.tie.gradle.plugins.json2md.Json2mdPlugin'
+        }
+    }
+}
+
+pluginBundle {
+    website = 'https://github.com/the-i-engineers/gradle-plugins'
+    vcsUrl = 'https://github.com/the-i-engineers/gradle-plugins.git'
+    tags = ['tags', 'for', 'your', 'plugins']
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+}
+
+test {
+    useJUnitPlatform()
+}
