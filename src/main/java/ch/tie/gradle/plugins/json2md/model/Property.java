@@ -61,11 +61,11 @@ public class Property implements ToMarkdown {
 
   @Override
   public String toMarkdown() {
-    return Json2mdConverterUtil.tableRow(name, type, description, sourceType, defaultValue.toString(),
+    return Json2mdConverterUtil.tableRow(sourceType, name, type, description, defaultValue.toString(),
         deprecation.toMarkdown());
   }
 
   public static String tableHeader() {
-    return Json2mdConverterUtil.tableHeader("name", "type", "description", "sourceType", "defaultValue", "deprecation");
+    return Json2mdConverterUtil.tableHeader("source", "name", "type", "description", "defaultValue", "deprecation");
   }
 }

@@ -1,6 +1,7 @@
 package ch.tie.gradle.plugins.json2md.model;
 
-import org.gradle.internal.impldep.org.apache.commons.lang.StringUtils;
+
+import org.apache.commons.lang3.StringUtils;
 
 import ch.tie.gradle.plugins.json2md.Json2mdConverterUtil;
 

@@ -3,7 +3,7 @@ package ch.tie.gradle.plugins.json2md;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import org.gradle.internal.impldep.org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class Json2mdConverterUtil {
 

@@ -11,7 +11,7 @@ public class Json2mdBeanFactory {
     return new Json2mdReader(project, new ObjectMapper());
   }
 
-  public static Json2mdWriter json2mdWriter() {
-    return new Json2mdWriter();
+  public static Json2mdWriter json2mdWriter(Project project) {
+    return new Json2mdWriter(project);
   }
 }
