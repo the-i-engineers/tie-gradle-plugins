@@ -1,6 +1,7 @@
 package ch.tie.gradle.plugins.json2md;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.gradle.api.Project;
 import org.gradle.testfixtures.ProjectBuilder;
@@ -17,6 +18,6 @@ class Json2mdPluginTest {
 
     assertTrue(project.getPluginManager().hasPlugin(JSON2MD_PLUGIN));
 
-    assertNotNull(project.getTasks().getByName("json2md"));
+    assertNotNull(project.getTasks().getByName(Json2mdPlugin.TASK_NAME));
   }
 }
