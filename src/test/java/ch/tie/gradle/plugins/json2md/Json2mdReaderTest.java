@@ -6,16 +6,9 @@ import static org.gradle.internal.impldep.org.hamcrest.CoreMatchers.notNullValue
 import static org.gradle.internal.impldep.org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Comparator;
 
 import org.gradle.api.GradleException;
-import org.gradle.api.Project;
-import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,25 +19,22 @@ import ch.tie.gradle.plugins.json2md.model.SpringConfigurationMetadata;
 
 class Json2mdReaderTest {
 
-  private static final String PROJECT_DIR = "./src/test/resources/project";
   private static final String VALID_METADATA_FILE = "spring-configuration-metadata.json";
   private static final String MALFORMED_METADATA = "malformed-metadata.json";
-  private final TestUtil testUtil = new TestUtil();
+  private TestUtil testUtil;
   private Json2mdReader json2mdReader;
-  private Project testProject;
 
   @BeforeEach
   void setupJson2mdReaderTest() {
-    deleteTestProject();
-    testProject = ProjectBuilder.builder().withProjectDir(new File(PROJECT_DIR)).build();
-    json2mdReader = new Json2mdReader(testProject, new ObjectMapper());
+    testUtil = new TestUtil();
+    json2mdReader = new Json2mdReader(testUtil.createTestProject(), new ObjectMapper());
   }
 
   @Test
   void shouldDeserializeValidMetadataFile() throws IOException {
-    testUtil.copyResourceToProjectDir(testProject, VALID_METADATA_FILE);
+    String target = testUtil.copyResourceToProjectDir(VALID_METADATA_FILE);
 
-    SpringConfigurationMetadata springConfigurationMetadata = json2mdReader.readMetadata(VALID_METADATA_FILE);
+    SpringConfigurationMetadata springConfigurationMetadata = json2mdReader.readMetadata(target);
 
     assertThat(springConfigurationMetadata, notNullValue());
     assertThat(springConfigurationMetadata.getProperties().size(), is(10));
@@ -54,10 +44,9 @@ class Json2mdReaderTest {
 
   @Test
   void shouldThrowExceptionIfMetadataMalformed() throws IOException {
-    testUtil.copyResourceToProjectDir(testProject, MALFORMED_METADATA);
+    String target = testUtil.copyResourceToProjectDir(MALFORMED_METADATA);
 
-    GradleException gradleException = assertThrows(GradleException.class,
-        () -> json2mdReader.readMetadata(MALFORMED_METADATA));
+    GradleException gradleException = assertThrows(GradleException.class, () -> json2mdReader.readMetadata(target));
 
     assertThat(gradleException.getMessage(), containsString("Unrecognized field \"groupies\""));
   }
@@ -71,15 +60,7 @@ class Json2mdReaderTest {
   }
 
   @AfterEach
-  void teardown() {
-    deleteTestProject();
-  }
-
-  private void deleteTestProject() {
-    try {
-      Files.walk(Paths.get(PROJECT_DIR)).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
-    } catch (IOException e) {
-      //ignore
-    }
+  void teardownTestProject() {
+    testUtil.deleteTestProject();
   }
 }

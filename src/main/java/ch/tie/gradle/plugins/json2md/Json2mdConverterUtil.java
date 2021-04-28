@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
+import ch.tie.gradle.plugins.json2md.model.SpringConfigurationMetadata;
+
 public class Json2mdConverterUtil {
 
   private static final String HEADER = "#";
@@ -16,6 +18,10 @@ public class Json2mdConverterUtil {
   private static final String[] ITALIC = {"*", "*"};
 
   private Json2mdConverterUtil() {
+  }
+
+  public static String metadata(SpringConfigurationMetadata metadata, String projectName) {
+    return h1(projectName) + metadata.toMarkdown();
   }
 
   public static String paragraph(String content) {

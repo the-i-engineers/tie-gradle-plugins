@@ -10,7 +10,7 @@ public class Json2mdPlugin implements org.gradle.api.Plugin<Project> {
   @Override
   public void apply(Project project) {
     Json2mdTask json2mdTask = project.getTasks()
-        .create(TASK_NAME, Json2mdTask.class, Json2mdBeanFactory.json2mdReader(project),
+        .create(TASK_NAME, Json2mdTask.class, project, Json2mdBeanFactory.json2mdReader(project),
             Json2mdBeanFactory.json2mdWriter(project));
     json2mdTask.dependsOn(TASK_DEPENDENCY);
   }

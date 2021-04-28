@@ -7,7 +7,7 @@ plugins {
 publishing {
     repositories {
         maven {
-            url = 'E:/repo'
+            url = 'D:/repo'
         }
     }
 }
