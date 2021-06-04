@@ -4,23 +4,15 @@ plugins {
     id 'com.gradle.plugin-publish' version '0.14.0'
 }
 
-publishing {
-    repositories {
-        maven {
-            url = 'D:/repo'
-        }
-    }
-}
-
 group 'ch.tie.gradle.plugins'
-version '0.2-SNAPSHOT'
+version '1.0.0'
 
 gradlePlugin {
     plugins {
         json2mdPlugin {
             id = 'ch.tie.gradle.plugins.json2md'
             displayName = 'Json2md'
-            description = 'describe'
+            description = "generates a markdown file from 'spring-configuration-metadata.json' to document your configuration properties"
             implementationClass = 'ch.tie.gradle.plugins.json2md.Json2mdPlugin'
         }
     }
@@ -29,7 +21,7 @@ gradlePlugin {
 pluginBundle {
     website = 'https://github.com/the-i-engineers/gradle-plugins'
     vcsUrl = 'https://github.com/the-i-engineers/gradle-plugins.git'
-    tags = ['tags', 'for', 'your', 'plugins']
+    tags = ['the i-engineers', 'e-health', 'java', 'spring']
 }
 
 repositories {
