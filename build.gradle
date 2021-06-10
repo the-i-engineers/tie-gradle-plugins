@@ -19,8 +19,8 @@ gradlePlugin {
 }
 
 pluginBundle {
-    website = 'https://github.com/the-i-engineers/gradle-plugins'
-    vcsUrl = 'https://github.com/the-i-engineers/gradle-plugins.git'
+    website = 'https://github.com/the-i-engineers/tie-gradle-plugins'
+    vcsUrl = 'https://github.com/the-i-engineers/tie-gradle-plugins.git'
     tags = ['the i-engineers', 'e-health', 'java', 'spring']
 }
 
