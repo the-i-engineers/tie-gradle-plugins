@@ -69,7 +69,7 @@ jobs:
           level: warning
   test:
     name: ci / test
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
