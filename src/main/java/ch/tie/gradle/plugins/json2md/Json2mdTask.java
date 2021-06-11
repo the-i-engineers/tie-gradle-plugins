@@ -4,6 +4,7 @@ import javax.inject.Inject;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
+import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
 
 import ch.tie.gradle.plugins.json2md.model.SpringConfigurationMetadata;
@@ -14,7 +15,11 @@ public class Json2mdTask extends DefaultTask {
   private final Json2mdReader json2mdReader;
   private final Json2mdWriter json2mdWriter;
 
+  @Input
   private String metadataPath;
+
+  @Input
+  private String markdownFilename;
 
   public String getMarkdownFilename() {
     return markdownFilename;
@@ -23,8 +28,6 @@ public class Json2mdTask extends DefaultTask {
   public void setMarkdownFilename(String markdownPath) {
     this.markdownFilename = markdownPath;
   }
-
-  private String markdownFilename;
 
   public String getMetadataPath() {
     return metadataPath;
