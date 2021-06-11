@@ -1,0 +1,93 @@
+name: Gradle CI
+
+on:
+  push:
+    branches: [ '**', '!main' ]
+  pull_request:
+    branches: [ develop ]
+
+env:
+  NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+  NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+
+jobs:
+  code-quality:
+    name: ci / code-quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+      - name: grant execute permission for gradlew on linux systems
+        if: runner.os == 'Linux'
+        run: chmod +x gradlew
+      - name: process java source code
+        run: ./gradlew check -x test -PnexusUsername=${{ env.NEXUS_USERNAME }} -PnexusPassword=${{ env.NEXUS_PASSWORD }}
+      - name: add checkstyle PR review
+        if: success() || failure()
+        uses: dbelyaev/action-checkstyle@master
+        with:
+          checkstyle_config: 'gradle/checkstyle.xml'
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review
+          level: warn
+      - name: add checkstyle Github status
+        if: success() || failure()
+        uses: dbelyaev/action-checkstyle@master
+        with:
+          checkstyle_config: 'gradle/checkstyle.xml'
+          github_token: ${{ secrets.github_token }}
+          reporter: github-check
+          level: error
+      - name: publish spotbugs results
+        if: success() || failure()
+        uses: jwgmeligmeyling/spotbugs-github-action@master
+        with:
+          path: '**/build/reports/spotbugs/*.xml'
+      - name: publish pmd results
+        if: success() || failure()
+        uses: jwgmeligmeyling/pmd-github-action@master
+        with:
+          path: '**/build/reports/pmd/*.xml'
+      - name: check spelling
+        if: success() || failure()
+        uses: reviewdog/action-misspell@v1
+        with:
+          locale: "US"
+          reporter: github-pr-review
+          level: warning
+      - name: check for non-inclusive language
+        if: success() || failure()
+        uses: get-woke/woke-action-reviewdog@v0
+        with:
+          reporter: github-pr-review
+          level: warning
+  test:
+    name: ci / test
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+      - name: Grant execute permission for gradlew
+        if: runner.os == 'Linux'
+        run: chmod +x gradlew
+      - name: Test with Gradle
+        run: ./gradlew test -PnexusUsername=${{ env.NEXUS_USERNAME }} -PnexusPassword=${{ env.NEXUS_PASSWORD }}
+      - name: Publish Test Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
+        with:
+          name: Test Report
+          path: '**/build/test-results/test/TEST-*.xml'
+          reporter: java-junit
