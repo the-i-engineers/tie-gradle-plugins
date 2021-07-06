@@ -47,6 +47,16 @@ class Json2MdConverterUtilTest {
   }
 
   @Test
+  void shouldExcludeSources() {
+    SpringConfigurationMetadata metadata = metadata(5);
+    metadata.setExcludedSources(List.of("sourceType1", "sourceType2"));
+    String markdown = metadata.toMarkdown();
+
+    assertThat(markdown,
+        is("## Properties\n\nsource | name | type | description | defaultValue | deprecation\n----- | ----- | ----- | ----- | ----- | -----\nsourceType0 | name0 | type0 | description0 | 0 | level0 reason0 replacement0\nsourceType3 | name3 | type3 | description3 | 3 | level3 reason3 replacement3\nsourceType4 | name4 | type4 | description4 | 4 | level4 reason4 replacement4\n"));
+  }
+
+  @Test
   void shouldConvertDeprecation() {
     String markdown = deprecation(1).toMarkdown();
     assertThat(markdown, is("level1 reason1 replacement1"));
