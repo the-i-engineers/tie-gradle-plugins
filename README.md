@@ -120,6 +120,10 @@ ch.tie.iengine.config.EmailProperties | sender.email.to-addresses | java.util.Li
 json2md {
     metadataPath = 'custom-path-to.json'
     // default is $projectBuildDir/classes/java/main/META-INF/spring-configuration-metadata.json
-    markdownFilename = 'customFilename.md'      // default is "$projectName-Documentation.md"
+    markdownFilename = 'customFilename.md'
+    // default is "$projectName-Documentation.md"
+    excludedSources = ['CustomerProperties', 'DatabaseMetricsProperties']
+    // excludes properties from this source file from being converted to markdown
+    // excludes all source files which contain any of the strings listed
 }
 ```

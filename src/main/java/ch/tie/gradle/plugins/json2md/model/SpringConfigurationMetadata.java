@@ -11,6 +11,7 @@ public class SpringConfigurationMetadata implements ToMarkdown {
   private List<Group> groups = new ArrayList<>();
   private List<Property> properties = new ArrayList<>();
   private List<Hint> hints = new ArrayList<>();
+  private List<String> excludedSources = new ArrayList<>();
 
   public List<Property> getProperties() {
     return properties;
@@ -36,6 +37,10 @@ public class SpringConfigurationMetadata implements ToMarkdown {
     this.groups = groups;
   }
 
+  public void setExcludedSources(List<String> excludedSources) {
+    this.excludedSources = excludedSources;
+  }
+
   @Override
   public String toMarkdown() {
     return propertiesTable();
@@ -43,6 +48,8 @@ public class SpringConfigurationMetadata implements ToMarkdown {
 
   private String propertiesTable() {
     return Json2mdConverterUtil.h2("Properties") + Property.tableHeader() + properties.stream()
+        .filter(property -> excludedSources.stream()
+            .noneMatch(source -> property.getSourceType().toLowerCase().contains(source.toLowerCase())))
         .map(Property::toMarkdown)
         .collect(Collectors.joining());
   }
