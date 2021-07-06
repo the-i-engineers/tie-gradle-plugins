@@ -92,7 +92,7 @@ Reads metadata from `build/classes/java/main/META-INF/spring-configuration-metad
 }
 ```
 
-Generated content in `Projectname-Documentation.md`
+Generated content in `ConfigurationProperties.md`
 
 ```markdown
 # Projectname
@@ -121,7 +121,7 @@ json2md {
     metadataPath = 'custom-path-to.json'
     // default is $projectBuildDir/classes/java/main/META-INF/spring-configuration-metadata.json
     markdownFilename = 'customFilename.md'
-    // default is "$projectName-Documentation.md"
+    // default is "ConfigurationProperties.md"
     excludedSources = ['CustomerProperties', 'DatabaseMetricsProperties']
     // excludes properties from this source file from being converted to markdown
     // excludes all source files which contain any of the strings listed

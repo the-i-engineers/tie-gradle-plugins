@@ -54,7 +54,7 @@ public class Json2mdTask extends DefaultTask {
   @Inject
   public Json2mdTask(Project project, Json2mdReader json2mdReader, Json2mdWriter json2mdWriter) {
     this.project = project;
-    this.markdownFilename = String.format("%s-Documentation.md", project.getName());
+    this.markdownFilename = "ConfigurationProperties.md";
     this.metadataPath =
         project.getBuildDir().getPath() + "/classes/java/main/META-INF/spring-configuration-metadata.json";
     this.json2mdReader = json2mdReader;

@@ -33,7 +33,7 @@ class Json2mdPluginTest {
     assertNotNull(json2mdTask);
     json2mdTask.json2mdTask();
 
-    assertTrue(testProject.file(testProject.getName() + "-Documentation.md").exists());
+    assertTrue(testProject.file("ConfigurationProperties.md").exists());
   }
 
   @AfterEach
