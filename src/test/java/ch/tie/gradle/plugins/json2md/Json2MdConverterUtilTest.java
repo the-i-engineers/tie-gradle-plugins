@@ -11,13 +11,15 @@ import org.junit.jupiter.api.Test;
 import ch.tie.gradle.plugins.json2md.model.Deprecation;
 import ch.tie.gradle.plugins.json2md.model.Property;
 import ch.tie.gradle.plugins.json2md.model.SpringConfigurationMetadata;
+import ch.tie.gradle.plugins.json2md.model.TableHeader;
 
 class Json2MdConverterUtilTest {
 
   @Test
   void shouldWriteTableHeader() {
-    String tableHeader = Json2mdConverterUtil.tableHeader("one", "two", "three");
-    assertThat(tableHeader, is("one | two | three\n----- | ----- | -----\n"));
+    String tableHeader = Json2mdConverterUtil.tableHeader(
+        List.of(TableHeader.NAME, TableHeader.TYPE, TableHeader.DESCRIPTION));
+    assertThat(tableHeader, is("name | type | description\n----- | ----- | -----\n"));
   }
 
   @Test
@@ -42,8 +44,15 @@ class Json2MdConverterUtilTest {
   @Test
   void shouldConvertMetadata() {
     String markdown = metadata(3).toMarkdown();
+    // @formatter:off
     assertThat(markdown,
-        is("## Properties\n\nsource | name | type | description | defaultValue | deprecation\n----- | ----- | ----- | ----- | ----- | -----\nsourceType0 | name0 | type0 | description0 | 0 | level0 reason0 replacement0\nsourceType1 | name1 | type1 | description1 | 1 | level1 reason1 replacement1\nsourceType2 | name2 | type2 | description2 | 2 | level2 reason2 replacement2\n"));
+        is("## Properties\n\n" +
+            "name | type | description | defaultValue\n" +
+            "----- | ----- | ----- | -----\n" +
+            "name0 | type0 | description0 | 0\n" +
+            "name1 | type1 | description1 | 1\n" +
+            "name2 | type2 | description2 | 2\n"));
+    // @formatter:on
   }
 
   @Test
@@ -53,7 +62,7 @@ class Json2MdConverterUtilTest {
     String markdown = metadata.toMarkdown();
 
     assertThat(markdown,
-        is("## Properties\n\nsource | name | type | description | defaultValue | deprecation\n----- | ----- | ----- | ----- | ----- | -----\nsourceType0 | name0 | type0 | description0 | 0 | level0 reason0 replacement0\nsourceType3 | name3 | type3 | description3 | 3 | level3 reason3 replacement3\nsourceType4 | name4 | type4 | description4 | 4 | level4 reason4 replacement4\n"));
+        is("## Properties\n\nname | type | description | defaultValue\n----- | ----- | ----- | -----\nname0 | type0 | description0 | 0\nname3 | type3 | description3 | 3\nname4 | type4 | description4 | 4\n"));
   }
 
   @Test
@@ -63,9 +72,26 @@ class Json2MdConverterUtilTest {
   }
 
   @Test
-  void shouldConvertProperty() {
-    String markdown = property(1).toMarkdown();
-    assertThat(markdown, is("sourceType1 | name1 | type1 | description1 | 1 | level1 reason1 replacement1\n"));
+  void shouldConvertAllFieldsOfProperty() {
+    Property property = property(1);
+    property.setTableHeaders(TableHeader.ALL_HEADERS);
+    String markdown = property.toMarkdown();
+    assertThat(markdown, is("name1 | type1 | description1 | 1 | level1 reason1 replacement1 | sourceType1\n"));
+  }
+
+  @Test
+  void shouldConvertIncludedFieldsOfProperty() {
+    Property property = property(1);
+    property.setTableHeaders(List.of(TableHeader.NAME, TableHeader.DESCRIPTION, TableHeader.DEFAULT_VALUE));
+    String markdown = property.toMarkdown();
+    assertThat(markdown, is("name1 | description1 | 1\n"));
+  }
+
+  @Test
+  void shouldConvertDefaultFieldsOfProperty() {
+    Property property = property(1);
+    String markdown = property.toMarkdown();
+    assertThat(markdown, is("name1 | type1 | description1 | 1 | level1 reason1 replacement1 | sourceType1\n"));
   }
 
   private Property property(int id) {

@@ -2,6 +2,7 @@ package ch.tie.gradle.plugins.json2md.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import ch.tie.gradle.plugins.json2md.Json2mdConverterUtil;
@@ -12,6 +13,7 @@ public class SpringConfigurationMetadata implements ToMarkdown {
   private List<Property> properties = new ArrayList<>();
   private List<Hint> hints = new ArrayList<>();
   private List<String> excludedSources = new ArrayList<>();
+  private Set<TableHeader> includedTableColumns = TableHeader.DEFAULT_HEADERS;
 
   public List<Property> getProperties() {
     return properties;
@@ -47,10 +49,16 @@ public class SpringConfigurationMetadata implements ToMarkdown {
   }
 
   private String propertiesTable() {
-    return Json2mdConverterUtil.h2("Properties") + Property.tableHeader() + properties.stream()
+    List<TableHeader> tableHeaders = TableHeader.tableHeaders(includedTableColumns);
+    return Json2mdConverterUtil.h2("Properties") + Json2mdConverterUtil.tableHeader(tableHeaders) + properties.stream()
+        .peek(property -> property.setTableHeaders(tableHeaders))
         .filter(property -> excludedSources.stream()
             .noneMatch(source -> property.getSourceType().toLowerCase().contains(source.toLowerCase())))
         .map(Property::toMarkdown)
         .collect(Collectors.joining());
+  }
+
+  public void setIncludedTableColumns(Set<TableHeader> includedTableColumns) {
+    this.includedTableColumns = includedTableColumns;
   }
 }
