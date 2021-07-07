@@ -99,18 +99,18 @@ Generated content in `ConfigurationProperties.md`
 
 ## Properties
 
-source | name | type | description | defaultValue | deprecation
------ | ----- | ----- | ----- | ----- | -----
-ch.tie.iengine.config.CustomerProperties | customer.name | java.lang.String |  |  |
-ch.tie.iengine.config.CustomerProperties | customer.service-level | java.util.List<java.lang.String> |  |  |
-ch.tie.iengine.config.DatabaseMetricsProperties | metrics.collector.db.enabled | java.lang.Boolean |  | false |
-ch.tie.iengine.config.DiscoveryMetricsProperties | metrics.collector.discovery.enabled | java.lang.Boolean |  | false |
-ch.tie.iengine.config.DiscoveryMetricsProperties | metrics.collector.discovery.installation-config-path | java.nio.file.Path |  |  |
-ch.tie.iengine.config.EmailProperties | sender.email.enabled | java.lang.Boolean |  | false |
-ch.tie.iengine.config.EmailProperties | sender.email.from-address | java.lang.String |  |  |
-ch.tie.iengine.config.EmailProperties | sender.email.interval | java.time.Duration |  | 1m |
-ch.tie.iengine.config.EmailProperties | sender.email.subject | java.lang.String |  |  |
-ch.tie.iengine.config.EmailProperties | sender.email.to-addresses | java.util.List<java.lang.String> |  |  |
+name | type | description | defaultValue
+----- | ----- | ----- | -----
+customer.name | java.lang.String |  |
+customer.service-level | java.util.List<java.lang.String> |  |
+metrics.collector.db.enabled | java.lang.Boolean |  | false
+metrics.collector.discovery.enabled | java.lang.Boolean |  | false
+metrics.collector.discovery.installation-config-path | java.nio.file.Path |  |
+sender.email.enabled | java.lang.Boolean |  | false
+sender.email.from-address | java.lang.String |  |
+sender.email.interval | java.time.Duration |  | 1m
+sender.email.subject | java.lang.String |  |
+sender.email.to-addresses | java.util.List<java.lang.String> |  |
 
 ```
 
@@ -125,5 +125,8 @@ json2md {
     excludedSources = ['CustomerProperties', 'DatabaseMetricsProperties']
     // excludes properties from this source file from being converted to markdown
     // excludes all source files which contain any of the strings listed
+    tableHeaders = ['SOURCE', 'NAME', 'TYPE', 'DESCRIPTION', 'DEFAULT_VALUE', 'DEPRECATION']
+    // controls which property fields are included in the generated markdown table
+    // default headers = ['NAME', 'TYPE', 'DESCRIPTION', 'DEFAULT_VALUE']
 }
 ```

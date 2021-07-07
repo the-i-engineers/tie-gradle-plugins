@@ -2,6 +2,7 @@ package ch.tie.gradle.plugins.json2md;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -11,6 +12,7 @@ import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
 
 import ch.tie.gradle.plugins.json2md.model.SpringConfigurationMetadata;
+import ch.tie.gradle.plugins.json2md.model.TableHeader;
 
 public class Json2mdTask extends DefaultTask {
 
@@ -26,6 +28,9 @@ public class Json2mdTask extends DefaultTask {
 
   @Input
   private String markdownFilename;
+
+  @Input
+  private Set<TableHeader> tableHeaders = TableHeader.DEFAULT_HEADERS;
 
   public String getMarkdownFilename() {
     return markdownFilename;
@@ -51,6 +56,14 @@ public class Json2mdTask extends DefaultTask {
     this.excludedSources = excludedSources;
   }
 
+  public Set<TableHeader> getTableHeaders() {
+    return tableHeaders;
+  }
+
+  public void setTableHeaders(Set<TableHeader> tableHeaders) {
+    this.tableHeaders = tableHeaders;
+  }
+
   @Inject
   public Json2mdTask(Project project, Json2mdReader json2mdReader, Json2mdWriter json2mdWriter) {
     this.project = project;
@@ -64,6 +77,7 @@ public class Json2mdTask extends DefaultTask {
   @TaskAction
   public void json2mdTask() {
     SpringConfigurationMetadata springConfigurationMetadata = json2mdReader.readMetadata(metadataPath);
+    springConfigurationMetadata.setTableHeaders(tableHeaders);
     springConfigurationMetadata.setExcludedSources(excludedSources);
     String markdown = Json2mdConverterUtil.metadata(springConfigurationMetadata, project.getName());
     json2mdWriter.writeMarkdownFile(markdownFilename, markdown);
