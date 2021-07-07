@@ -15,7 +15,6 @@ apply plugin: 'com.github.spotbugs'
 apply plugin: 'pmd'
 
 group 'ch.tie.gradle.plugins'
-version '1.0.0'
 
 gradlePlugin {
     plugins {
@@ -24,6 +23,7 @@ gradlePlugin {
             displayName = 'Json2md'
             description = "generates a markdown file from 'spring-configuration-metadata.json' to document your configuration properties"
             implementationClass = 'ch.tie.gradle.plugins.json2md.Json2mdPlugin'
+            version = '1.1.0'
         }
     }
 }
