@@ -30,7 +30,7 @@ public class Json2mdTask extends DefaultTask {
   private String markdownFilename;
 
   @Input
-  private Set<TableHeader> includedTableColumns = TableHeader.DEFAULT_HEADERS;
+  private Set<TableHeader> tableHeaders = TableHeader.DEFAULT_HEADERS;
 
   public String getMarkdownFilename() {
     return markdownFilename;
@@ -56,12 +56,12 @@ public class Json2mdTask extends DefaultTask {
     this.excludedSources = excludedSources;
   }
 
-  public Set<TableHeader> getIncludedTableColumns() {
-    return includedTableColumns;
+  public Set<TableHeader> getTableHeaders() {
+    return tableHeaders;
   }
 
-  public void setIncludedTableColumns(Set<TableHeader> includedTableColumns) {
-    this.includedTableColumns = includedTableColumns;
+  public void setTableHeaders(Set<TableHeader> tableHeaders) {
+    this.tableHeaders = tableHeaders;
   }
 
   @Inject
@@ -77,7 +77,7 @@ public class Json2mdTask extends DefaultTask {
   @TaskAction
   public void json2mdTask() {
     SpringConfigurationMetadata springConfigurationMetadata = json2mdReader.readMetadata(metadataPath);
-    springConfigurationMetadata.setIncludedTableColumns(includedTableColumns);
+    springConfigurationMetadata.setTableHeaders(tableHeaders);
     springConfigurationMetadata.setExcludedSources(excludedSources);
     String markdown = Json2mdConverterUtil.metadata(springConfigurationMetadata, project.getName());
     json2mdWriter.writeMarkdownFile(markdownFilename, markdown);
