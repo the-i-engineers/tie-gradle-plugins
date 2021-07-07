@@ -1,11 +1,20 @@
+buildscript {
+    dependencies {
+        classpath("gradle.plugin.com.github.spotbugs.snom:spotbugs-gradle-plugin:4.7.0")
+    }
+}
+
 plugins {
     id 'java-gradle-plugin'
     id 'maven-publish'
     id 'com.gradle.plugin-publish' version '0.14.0'
 }
 
+apply plugin: 'checkstyle'
+apply plugin: 'com.github.spotbugs'
+apply plugin: 'pmd'
+
 group 'ch.tie.gradle.plugins'
-version '1.0.0'
 
 gradlePlugin {
     plugins {
@@ -14,6 +23,7 @@ gradlePlugin {
             displayName = 'Json2md'
             description = "generates a markdown file from 'spring-configuration-metadata.json' to document your configuration properties"
             implementationClass = 'ch.tie.gradle.plugins.json2md.Json2mdPlugin'
+            version = '1.1.0'
         }
     }
 }
@@ -26,6 +36,7 @@ pluginBundle {
 
 repositories {
     mavenCentral()
+    gradlePluginPortal()
 }
 
 dependencies {
@@ -35,6 +46,31 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+}
+
+checkstyle {
+    configFile = rootProject.file('gradle/checkstyle.xml')
+}
+
+pmd {
+    toolVersion = '6.12.0'
+    rulePriority = 3
+}
+
+pmdMain {
+    ruleSets = []
+    ruleSetFiles = rootProject.files('gradle/pmd/main.xml')
+}
+
+pmdTest {
+    ruleSets = []
+    ruleSetFiles = rootProject.files('gradle/pmd/test.xml')
+}
+
+compileJava {
+    options.encoding = 'UTF-8'
+    options.warnings = true
+    options.deprecation = true
 }
 
 test {

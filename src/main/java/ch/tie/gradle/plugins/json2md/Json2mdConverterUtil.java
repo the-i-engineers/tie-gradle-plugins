@@ -1,11 +1,13 @@
 package ch.tie.gradle.plugins.json2md;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
 import ch.tie.gradle.plugins.json2md.model.SpringConfigurationMetadata;
+import ch.tie.gradle.plugins.json2md.model.TableHeader;
 
 public class Json2mdConverterUtil {
 
@@ -40,14 +42,22 @@ public class Json2mdConverterUtil {
     return "\n";
   }
 
-  public static String tableHeader(String... headers) {
-    String[] separators = new String[headers.length];
+  public static String tableHeader(List<TableHeader> tableHeaders) {
+    return headers(tableHeaders.stream().map(TableHeader::description).collect(Collectors.toList()));
+  }
+
+  private static String headers(List<String> headers) {
+    String[] separators = new String[headers.size()];
     Arrays.fill(separators, TABLE_SEPARATOR);
     return String.join(TABLE_DELIMITER, headers) + newLine() + String.join(TABLE_DELIMITER, separators) + newLine();
   }
 
-  public static String tableRow(String... data) {
+  public static String tableRow(List<String> data) {
     return String.join(TABLE_DELIMITER, data) + newLine();
+  }
+
+  public static String tableRow(String... data) {
+    return tableRow(Arrays.asList(data));
   }
 
   private static String header(int num, String heading) {

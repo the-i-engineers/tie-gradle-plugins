@@ -1,8 +1,24 @@
 package ch.tie.gradle.plugins.json2md.model;
 
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
 import ch.tie.gradle.plugins.json2md.Json2mdConverterUtil;
 
 public class Property implements ToMarkdown {
+
+  // @formatter:off
+  private final Map<TableHeader, Supplier<String>> rowMapper = Map.of(
+      TableHeader.NAME, this::getName,
+      TableHeader.TYPE, this::getType,
+      TableHeader.DESCRIPTION, this::getDescription,
+      TableHeader.DEFAULT_VALUE, () -> getDefaultValue().toString(),
+      TableHeader.SOURCE, this::getSourceType,
+      TableHeader.DEPRECATION, () -> getDeprecation().toMarkdown()
+  );
+  // @formatter:on
 
   private String name = "";
   private String type = "";
@@ -10,6 +26,7 @@ public class Property implements ToMarkdown {
   private String sourceType = "";
   private Object defaultValue = "";
   private Deprecation deprecation = new Deprecation();
+  private List<TableHeader> tableHeaders = TableHeader.ALL_HEADERS;
 
   public String getName() {
     return name;
@@ -61,11 +78,11 @@ public class Property implements ToMarkdown {
 
   @Override
   public String toMarkdown() {
-    return Json2mdConverterUtil.tableRow(sourceType, name, type, description, defaultValue.toString(),
-        deprecation.toMarkdown());
+    return Json2mdConverterUtil.tableRow(
+        tableHeaders.stream().map(rowMapper::get).map(Supplier::get).collect(Collectors.toList()));
   }
 
-  public static String tableHeader() {
-    return Json2mdConverterUtil.tableHeader("source", "name", "type", "description", "defaultValue", "deprecation");
+  public void setTableHeaders(List<TableHeader> tableHeaders) {
+    this.tableHeaders = tableHeaders;
   }
 }
