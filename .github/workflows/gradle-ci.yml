@@ -6,14 +6,6 @@ on:
   pull_request:
     branches: [ '**' ]
 
-env:
-  NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-  NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-  NEXUS_PUBLIC_URL: ${{ secrets.NEXUS_PUBLIC_URL }}
-  NEXUS_RELEASES_URL: ${{ secrets.NEXUS_RELEASES_URL }}
-  NEXUS_SNAPSHOTS_URL: ${{ secrets.NEXUS_SNAPSHOTS_URL }}
-  RELEASES_URI: ${{ secrets.RELEASES_URI }}
-
 jobs:
   code-quality:
     name: ci / code-quality
@@ -31,7 +23,7 @@ jobs:
         if: runner.os == 'Linux'
         run: chmod +x gradlew
       - name: process java source code
-        run: ./gradlew check -x test -PnexusUsername=${{ env.NEXUS_USERNAME }} -PnexusPassword=${{ env.NEXUS_PASSWORD }} -PnexusPublicUrl=${{ env.NEXUS_PUBLIC_URL }} -PnexusReleasesUrl=${{ env.NEXUS_RELEASES_URL }} -PnexusSnapshotsUrl=${{ env.NEXUS_SNAPSHOTS_URL }} '-Dreleases.uri=${{ env.RELEASES_URI }}'
+        run: ./gradlew check -x test
       - name: add checkstyle PR review
         if: success() || failure()
         uses: jwgmeligmeyling/checkstyle-github-action@v1.2
@@ -67,7 +59,7 @@ jobs:
           level: warning
   test:
     name: ci / test
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
@@ -81,7 +73,7 @@ jobs:
         if: runner.os == 'Linux'
         run: chmod +x gradlew
       - name: Test with Gradle
-        run: ./gradlew test -PnexusUsername=${{ env.NEXUS_USERNAME }} -PnexusPassword=${{ env.NEXUS_PASSWORD }} --continue '-Dfile.encoding=UTF-8'
+        run: ./gradlew test
       - name: Publish Test Report
         uses: dorny/test-reporter@v1
         if: success() || failure()
