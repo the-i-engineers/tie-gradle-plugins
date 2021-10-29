@@ -2,9 +2,9 @@ name: Gradle CI
 
 on:
   push:
-    branches: [ '**', '!main' ]
+    branches: [ 'develop', 'main', 'master', 'support/*' ]
   pull_request:
-    branches: [ develop ]
+    branches: [ '**' ]
 
 jobs:
   code-quality:
@@ -26,28 +26,22 @@ jobs:
         run: ./gradlew check -x test
       - name: add checkstyle PR review
         if: success() || failure()
-        uses: dbelyaev/action-checkstyle@master
+        uses: jwgmeligmeyling/checkstyle-github-action@v1.2
         with:
-          checkstyle_config: 'gradle/checkstyle.xml'
-          github_token: ${{ secrets.github_token }}
-          reporter: github-pr-review
-          level: warn
+          path: '**/build/reports/checkstyle/*.xml'
       - name: add checkstyle Github status
         if: success() || failure()
-        uses: dbelyaev/action-checkstyle@master
+        uses: jwgmeligmeyling/checkstyle-github-action@v1.2
         with:
-          checkstyle_config: 'gradle/checkstyle.xml'
-          github_token: ${{ secrets.github_token }}
-          reporter: github-check
-          level: error
+          path: '**/build/reports/checkstyle/*.xml'
       - name: publish spotbugs results
         if: success() || failure()
-        uses: jwgmeligmeyling/spotbugs-github-action@master
+        uses: jwgmeligmeyling/spotbugs-github-action@v1.2
         with:
           path: '**/build/reports/spotbugs/*.xml'
       - name: publish pmd results
         if: success() || failure()
-        uses: jwgmeligmeyling/pmd-github-action@master
+        uses: jwgmeligmeyling/pmd-github-action@v1.2
         with:
           path: '**/build/reports/pmd/*.xml'
       - name: check spelling
