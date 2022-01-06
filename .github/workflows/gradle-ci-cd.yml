@@ -2,7 +2,9 @@ name: Gradle CI
 
 on:
   push:
-    branches: [ '**' ]
+    branches: [ 'develop', 'main' ]
+    tags:
+      - '*'
   pull_request:
     branches: [ develop ]
 
