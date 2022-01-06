@@ -27,7 +27,8 @@ jobs:
 
       - name: gradlew test sonarqube
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: ./gradlew test sonarqube --continue
 
       - name: publish test reports
