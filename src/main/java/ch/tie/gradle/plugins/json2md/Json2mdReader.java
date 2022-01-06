@@ -6,7 +6,6 @@ import java.io.IOException;
 
 import javax.inject.Inject;
 
-import org.gradle.api.GradleException;
 import org.gradle.api.Project;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,8 +13,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ch.tie.gradle.plugins.json2md.model.SpringConfigurationMetadata;
 
 public class Json2mdReader {
-
-  private static final String FILE_NOT_FOUND = "No such file found '%s'";
 
   private final ObjectMapper objectMapper;
   private final Project project;
@@ -29,12 +26,14 @@ public class Json2mdReader {
   public SpringConfigurationMetadata readMetadata(String metadataPath) {
     File file = project.file(metadataPath);
     if (!file.exists()) {
-      throw new GradleException(String.format(FILE_NOT_FOUND, metadataPath));
+      project.getLogger().warn("No such file found '{}'", file.getAbsolutePath());
+      return SpringConfigurationMetadata.noMetadata();
     }
     try {
       return objectMapper.readValue(file, SpringConfigurationMetadata.class);
     } catch (IOException e) {
-      throw new GradleException(e.getMessage());
+      project.getLogger().warn(e.getMessage(), e);
+      return SpringConfigurationMetadata.noMetadata();
     }
   }
 }
