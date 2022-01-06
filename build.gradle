@@ -1,20 +1,23 @@
-buildscript {
-    dependencies {
-        classpath("gradle.plugin.com.github.spotbugs.snom:spotbugs-gradle-plugin:4.7.0")
+plugins {
+    id 'java-gradle-plugin'
+    id 'jacoco'
+    id 'maven-publish'
+    id 'com.gradle.plugin-publish' version '0.19.0'
+    id 'org.sonarqube' version '3.3'
+}
+
+group 'ch.tie.gradle.plugins'
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "the-i-engineers_${project.name}"
+        property "sonar.organization", "the-i-engineers"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.coverage.jacoco.xmlReportPaths", "**/build/reports/jacoco/test/jacocoTestReport.xml"
     }
 }
 
-plugins {
-    id 'java-gradle-plugin'
-    id 'maven-publish'
-    id 'com.gradle.plugin-publish' version '0.14.0'
-}
-
-apply plugin: 'checkstyle'
-apply plugin: 'com.github.spotbugs'
-apply plugin: 'pmd'
-
-group 'ch.tie.gradle.plugins'
 
 gradlePlugin {
     plugins {
@@ -31,7 +34,7 @@ gradlePlugin {
 pluginBundle {
     website = 'https://github.com/the-i-engineers/tie-gradle-plugins'
     vcsUrl = 'https://github.com/the-i-engineers/tie-gradle-plugins.git'
-    tags = ['the i-engineers', 'e-health', 'java', 'spring']
+    tags = ['the i-engineers', 'e-health', 'java', 'spring', 'automation', 'documentation']
 }
 
 repositories {
@@ -40,31 +43,12 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.2'
-    implementation 'commons-io:commons-io:2.6'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.1'
+    implementation 'commons-io:commons-io:2.11.0'
     implementation "org.apache.commons:commons-lang3:3.12.0"
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-}
-
-checkstyle {
-    configFile = rootProject.file('gradle/checkstyle.xml')
-}
-
-pmd {
-    toolVersion = '6.12.0'
-    rulePriority = 3
-}
-
-pmdMain {
-    ruleSets = []
-    ruleSetFiles = rootProject.files('gradle/pmd/main.xml')
-}
-
-pmdTest {
-    ruleSets = []
-    ruleSetFiles = rootProject.files('gradle/pmd/test.xml')
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
 }
 
 compileJava {
@@ -73,6 +57,20 @@ compileJava {
     options.deprecation = true
 }
 
+jacoco {
+    toolVersion = "0.8.7"
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = true
+        csv.required = false
+        html.required = false
+    }
+}
+
 test {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
+    include '**/*Test.class'
 }
