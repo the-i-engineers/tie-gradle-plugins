@@ -15,6 +15,10 @@ public class SpringConfigurationMetadata implements ToMarkdown {
   private List<String> excludedSources = new ArrayList<>();
   private Set<TableHeader> tableHeaders = TableHeader.DEFAULT_HEADERS;
 
+  public static SpringConfigurationMetadata noMetadata() {
+    return new SpringConfigurationMetadata();
+  }
+
   public List<Property> getProperties() {
     return properties;
   }
@@ -49,9 +53,12 @@ public class SpringConfigurationMetadata implements ToMarkdown {
   }
 
   private String propertiesTable() {
-    List<TableHeader> tableHeaders = TableHeader.tableHeaders(this.tableHeaders);
-    return Json2mdConverterUtil.h2("Properties") + Json2mdConverterUtil.tableHeader(tableHeaders) + properties.stream()
-        .peek(property -> property.setTableHeaders(tableHeaders))
+    if (properties.isEmpty()) {
+      return "";
+    }
+    List<TableHeader> headers = TableHeader.tableHeaders(this.tableHeaders);
+    return Json2mdConverterUtil.h2("Properties") + Json2mdConverterUtil.tableHeader(headers) + properties.stream()
+        .map(property -> property.setTableHeaders(headers))
         .filter(property -> excludedSources.stream()
             .noneMatch(source -> property.getSourceType().toLowerCase().contains(source.toLowerCase())))
         .map(Property::toMarkdown)

@@ -1,14 +1,11 @@
 package ch.tie.gradle.plugins.json2md;
 
-import static org.gradle.internal.impldep.org.hamcrest.CoreMatchers.containsString;
 import static org.gradle.internal.impldep.org.hamcrest.CoreMatchers.is;
 import static org.gradle.internal.impldep.org.hamcrest.CoreMatchers.notNullValue;
 import static org.gradle.internal.impldep.org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 
-import org.gradle.api.GradleException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,20 +40,19 @@ class Json2mdReaderTest {
   }
 
   @Test
-  void shouldThrowExceptionIfMetadataMalformed() throws IOException {
+  void shouldCreateEmptyMetadataFileIfMetadataMalformed() throws IOException {
     String target = testUtil.copyResourceToProjectDir(MALFORMED_METADATA);
 
-    GradleException gradleException = assertThrows(GradleException.class, () -> json2mdReader.readMetadata(target));
+    SpringConfigurationMetadata springConfigurationMetadata = json2mdReader.readMetadata(target);
 
-    assertThat(gradleException.getMessage(), containsString("Unrecognized field \"groupies\""));
+    assertThat(springConfigurationMetadata.toMarkdown(), is(""));
   }
 
   @Test
-  void shouldThrowExceptionIfFileNotFound() {
-    GradleException gradleException = assertThrows(GradleException.class,
-        () -> json2mdReader.readMetadata("invalid filepath"));
+  void shouldCreateEmptyMetadataFileIfNoMetadataFile() {
+    SpringConfigurationMetadata springConfigurationMetadata = json2mdReader.readMetadata("unexisting_annotation.json");
 
-    assertThat(gradleException.getMessage(), containsString("No such file found 'invalid filepath'"));
+    assertThat(springConfigurationMetadata.toMarkdown(), is(""));
   }
 
   @AfterEach
