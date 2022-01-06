@@ -26,6 +26,8 @@ jobs:
         run: chmod +x gradlew
 
       - name: gradlew test sonarqube
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         run: ./gradlew test sonarqube --continue
 
       - name: publish test reports
