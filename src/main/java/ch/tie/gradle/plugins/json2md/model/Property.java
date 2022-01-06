@@ -82,7 +82,8 @@ public class Property implements ToMarkdown {
         tableHeaders.stream().map(rowMapper::get).map(Supplier::get).collect(Collectors.toList()));
   }
 
-  public void setTableHeaders(List<TableHeader> tableHeaders) {
+  public Property setTableHeaders(List<TableHeader> tableHeaders) {
     this.tableHeaders = tableHeaders;
+    return this;
   }
 }
