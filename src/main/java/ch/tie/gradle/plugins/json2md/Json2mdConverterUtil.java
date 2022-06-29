@@ -1,13 +1,13 @@
 package ch.tie.gradle.plugins.json2md;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-
 import ch.tie.gradle.plugins.json2md.model.SpringConfigurationMetadata;
 import ch.tie.gradle.plugins.json2md.model.TableHeader;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class Json2mdConverterUtil {
 
@@ -78,5 +78,11 @@ public class Json2mdConverterUtil {
 
   public static String tab() {
     return SPACE.repeat(2);
+  }
+
+  public static String replaceLineBreaks(String line) {
+    return Optional.ofNullable(line)
+            .map(l -> l.replaceAll("\n", " "))
+            .orElse(null);
   }
 }
