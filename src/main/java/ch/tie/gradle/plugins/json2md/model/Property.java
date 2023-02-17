@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 
 import ch.tie.gradle.plugins.json2md.Json2mdConverterUtil;
 
+import static ch.tie.gradle.plugins.json2md.Json2mdConverterUtil.replaceLineBreaks;
+
 public class Property implements ToMarkdown {
 
   // @formatter:off
@@ -45,7 +47,7 @@ public class Property implements ToMarkdown {
   }
 
   public String getDescription() {
-    return description;
+    return replaceLineBreaks(description);
   }
 
   public void setDescription(String description) {
