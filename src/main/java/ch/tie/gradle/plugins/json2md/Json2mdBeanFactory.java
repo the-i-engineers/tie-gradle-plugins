@@ -7,6 +7,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Json2mdBeanFactory {
 
+  private Json2mdBeanFactory() {
+  }
+
   public static Json2mdReader json2mdReader(Project project) {
     return new Json2mdReader(project, new ObjectMapper());
   }
