@@ -16,6 +16,8 @@ public class Json2mdConverterUtil {
   private static final String NEW_LINE = "\n";
   private static final String TABLE_SEPARATOR = "-----";
   private static final String TABLE_DELIMITER = " | ";
+
+  private static final String TABLE_DELIMITER_START = "| ";
   private static final String[] BOLD = {"**", "**"};
   private static final String[] ITALIC = {"*", "*"};
 
@@ -49,11 +51,11 @@ public class Json2mdConverterUtil {
   private static String headers(List<String> headers) {
     String[] separators = new String[headers.size()];
     Arrays.fill(separators, TABLE_SEPARATOR);
-    return String.join(TABLE_DELIMITER, headers) + newLine() + String.join(TABLE_DELIMITER, separators) + newLine();
+    return tableFormat(String.join(TABLE_DELIMITER, headers)) + newLine() + tableFormat(String.join(TABLE_DELIMITER, separators)) + newLine();
   }
 
   public static String tableRow(List<String> data) {
-    return String.join(TABLE_DELIMITER, data) + newLine();
+    return tableFormat(String.join(TABLE_DELIMITER, data)) + newLine();
   }
 
   public static String tableRow(String... data) {
@@ -78,5 +80,9 @@ public class Json2mdConverterUtil {
 
   public static String tab() {
     return SPACE.repeat(2);
+  }
+
+  private static String tableFormat(String content){
+    return TABLE_DELIMITER_START + content + TABLE_DELIMITER;
   }
 }
