@@ -51,11 +51,11 @@ public class Json2mdConverterUtil {
   private static String headers(List<String> headers) {
     String[] separators = new String[headers.size()];
     Arrays.fill(separators, TABLE_SEPARATOR);
-    return tableFormat(String.join(TABLE_DELIMITER, headers)) + newLine() + tableFormat(String.join(TABLE_DELIMITER, separators)) + newLine();
+    return addSideBorders(String.join(TABLE_DELIMITER, headers)) + newLine() + addSideBorders(String.join(TABLE_DELIMITER, separators)) + newLine();
   }
 
   public static String tableRow(List<String> data) {
-    return tableFormat(String.join(TABLE_DELIMITER, data)) + newLine();
+    return addSideBorders(String.join(TABLE_DELIMITER, data)) + newLine();
   }
 
   public static String tableRow(String... data) {
@@ -82,7 +82,7 @@ public class Json2mdConverterUtil {
     return SPACE.repeat(2);
   }
 
-  private static String tableFormat(String content){
+  private static String addSideBorders(String content){
     return TABLE_DELIMITER_START + content + TABLE_DELIMITER;
   }
 }
