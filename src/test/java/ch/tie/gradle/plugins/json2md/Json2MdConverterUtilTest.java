@@ -19,7 +19,10 @@ class Json2MdConverterUtilTest {
   void shouldWriteTableHeader() {
     String tableHeader = Json2mdConverterUtil.tableHeader(
         List.of(TableHeader.NAME, TableHeader.TYPE, TableHeader.DESCRIPTION));
-    assertThat(tableHeader, is("| name | type | description | \n| ----- | ----- | ----- | \n"));
+    assertThat(tableHeader, is("""
+        | name | type | description |\040
+        | ----- | ----- | ----- |\040
+        """));
   }
 
   @Test
@@ -44,15 +47,15 @@ class Json2MdConverterUtilTest {
   @Test
   void shouldConvertMetadata() {
     String markdown = metadata(3).toMarkdown();
-    // @formatter:off
-    assertThat(markdown,
-        is("## Properties\n\n" +
-            "| name | type | description | defaultValue | \n" +
-            "| ----- | ----- | ----- | ----- | \n" +
-            "| name0 | type0 | description0 | 0 | \n" +
-            "| name1 | type1 | description1 | 1 | \n" +
-            "| name2 | type2 | description2 | 2 | \n"));
-    // @formatter:on
+    assertThat(markdown, is("""
+       ## Properties
+                    
+       | name | type | description | defaultValue |\040
+       | ----- | ----- | ----- | ----- |\040
+       | name0 | type0 | description0 | 0 |\040
+       | name1 | type1 | description1 | 1 |\040
+       | name2 | type2 | description2 | 2 |\040
+        """));
   }
 
   @Test
@@ -61,12 +64,15 @@ class Json2MdConverterUtilTest {
     metadata.setExcludedSources(List.of("sourceType1", "sourceType2"));
     String markdown = metadata.toMarkdown();
 
-    assertThat(markdown, is("## Properties\n\n"
-        + "| name | type | description | defaultValue | \n"
-        + "| ----- | ----- | ----- | ----- | \n"
-        + "| name0 | type0 | description0 | 0 | \n"
-        + "| name3 | type3 | description3 | 3 | \n"
-        + "| name4 | type4 | description4 | 4 | \n"));
+    assertThat(markdown, is("""
+        ## Properties
+          
+        | name | type | description | defaultValue |\040
+        | ----- | ----- | ----- | ----- |\040
+        | name0 | type0 | description0 | 0 |\040
+        | name3 | type3 | description3 | 3 |\040
+        | name4 | type4 | description4 | 4 |\040
+        """));
   }
 
   @Test
