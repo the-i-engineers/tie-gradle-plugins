@@ -99,18 +99,18 @@ Generated content in `ConfigurationProperties.md`
 
 ## Properties
 
-name | type | description | defaultValue
------ | ----- | ----- | -----
-customer.name | java.lang.String |  |
-customer.service-level | java.util.List<java.lang.String> |  |
-metrics.collector.db.enabled | java.lang.Boolean |  | false
-metrics.collector.discovery.enabled | java.lang.Boolean |  | false
-metrics.collector.discovery.installation-config-path | java.nio.file.Path |  |
-sender.email.enabled | java.lang.Boolean |  | false
-sender.email.from-address | java.lang.String |  |
-sender.email.interval | java.time.Duration |  | 1m
-sender.email.subject | java.lang.String |  |
-sender.email.to-addresses | java.util.List<java.lang.String> |  |
+| name | type | description | defaultValue | 
+| ----- | ----- | ----- | ----- | 
+| customer.name | java.lang.String |  | | 
+| customer.service-level | java.util.List<java.lang.String> |  |
+| metrics.collector.db.enabled | java.lang.Boolean |  | false | 
+| metrics.collector.discovery.enabled | java.lang.Boolean |  | false | 
+| metrics.collector.discovery.installation-config-path | java.nio.file.Path |  | | 
+| sender.email.enabled | java.lang.Boolean |  | false | 
+| sender.email.from-address | java.lang.String |  | | 
+| sender.email.interval | java.time.Duration |  | 1m | 
+| sender.email.subject | java.lang.String |  | | 
+| sender.email.to-addresses | java.util.List<java.lang.String> |  | | 
 
 ```
 
