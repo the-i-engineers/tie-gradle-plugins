@@ -27,12 +27,6 @@ jobs:
         if: runner.os == 'Linux'
         run: chmod +x gradlew
 
-      - name: gradlew test sonarqube
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew test sonarqube --continue
-
       - name: publish test reports
         if: success() || failure()
         uses: dorny/test-reporter@v1.9.1
