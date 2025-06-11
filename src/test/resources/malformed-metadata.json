@@ -21,7 +21,7 @@
       "sourceType": "ch.tie.iengine.config.EmailProperties"
     }
   ],
-  "properties": [
+  "props": [
     {
       "name": "customer.name",
       "type": "java.lang.String",
