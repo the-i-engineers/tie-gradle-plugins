@@ -77,5 +77,8 @@
       "sourceType": "ch.tie.iengine.config.EmailProperties"
     }
   ],
-  "hints": []
+  "hints": [],
+  "ignored": {
+    "properties": []
+  }
 }
