@@ -69,7 +69,7 @@ public class Json2mdTask extends DefaultTask {
     this.project = project;
     this.markdownFilename = "ConfigurationProperties.md";
     this.metadataPath =
-        project.getBuildDir().getPath() + "/classes/java/main/META-INF/spring-configuration-metadata.json";
+        project.getLayout().getBuildDirectory().get().getAsFile().getPath() + "/classes/java/main/META-INF/spring-configuration-metadata.json";
     this.json2mdReader = json2mdReader;
     this.json2mdWriter = json2mdWriter;
   }

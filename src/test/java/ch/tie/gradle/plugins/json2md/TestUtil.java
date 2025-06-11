@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
 import org.gradle.api.Project;
@@ -22,10 +23,11 @@ public class TestUtil {
   }
 
   public String copyResourceToProjectDir(String metadataFile) throws IOException {
-    InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream(metadataFile);
-    String target = project.getBuildDir() + "/classes/java/main/META-INF/" + metadataFile;
-    FileUtils.copyInputStreamToFile(Objects.requireNonNull(resourceAsStream), new File(target));
-    return target;
+    try(InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream(metadataFile)) {
+      String target = project.getLayout().getBuildDirectory().get() + "/classes/java/main/META-INF/" + metadataFile;
+      FileUtils.copyInputStreamToFile(Objects.requireNonNull(resourceAsStream), new File(target));
+      return target;
+    }
   }
 
   public Project createTestProject() {
@@ -34,8 +36,8 @@ public class TestUtil {
   }
 
   public void deleteTestProject() {
-    try {
-      Files.walk(Paths.get(PROJECT_DIR)).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
+    try(Stream<Path> list = Files.walk(Paths.get(PROJECT_DIR))) {
+      list.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
     } catch (IOException e) {
       //ignore
     }

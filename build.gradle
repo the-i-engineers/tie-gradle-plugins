@@ -67,3 +67,17 @@ java {
         languageVersion = JavaLanguageVersion.of(17) // use jdk17 for backwards compatibility
     }
 }
+
+tasks.withType(JavaCompile).configureEach {
+    options.warnings = true
+    options.deprecation = true
+}
+
+
+allprojects {
+    tasks.withType(Javadoc).tap {
+        configureEach {
+            enabled = false
+        }
+    }
+}
