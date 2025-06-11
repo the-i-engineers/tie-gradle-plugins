@@ -12,8 +12,6 @@ jobs:
   ci:
     name: ci
     runs-on: ubuntu-latest
-    env:
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     steps:
       - uses: actions/checkout@v4.2.0
         with:
@@ -31,9 +29,6 @@ jobs:
 
       - name: gradlew test
         run: ./gradlew test --continue
-
-      - name: gradlew sonar
-        run: ./gradlew sonarqube
 
       - name: publish test reports
         if: success() || failure()
