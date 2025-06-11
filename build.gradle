@@ -26,7 +26,7 @@ gradlePlugin {
             displayName = 'Json2md'
             description = "generates a markdown file from 'spring-configuration-metadata.json' to document your configuration properties"
             implementationClass = 'ch.tie.gradle.plugins.json2md.Json2mdPlugin'
-            version = '1.3.0'
+            version = '1.5.0'
         }
     }
 }
@@ -43,12 +43,12 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.2'
-    implementation 'commons-io:commons-io:2.11.0'
-    implementation "org.apache.commons:commons-lang3:3.12.0"
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.19.0'
+    implementation 'commons-io:commons-io:2.19.0'
+    implementation "org.apache.commons:commons-lang3:3.17.0"
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.13.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.13.1'
 }
 
 compileJava {
@@ -58,7 +58,7 @@ compileJava {
 }
 
 jacoco {
-    toolVersion = "0.8.7"
+    toolVersion = "0.8.12"
 }
 
 jacocoTestReport {
