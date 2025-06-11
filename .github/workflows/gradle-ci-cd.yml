@@ -30,6 +30,9 @@ jobs:
       - name: gradlew test
         run: ./gradlew test --continue
 
+      - name: gradlew sonar
+        run: ./gradlew sonarqube
+
       - name: publish test reports
         if: success() || failure()
         uses: dorny/test-reporter@v1.9.1
