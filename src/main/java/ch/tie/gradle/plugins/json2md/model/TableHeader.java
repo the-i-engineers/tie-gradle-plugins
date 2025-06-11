@@ -2,7 +2,6 @@ package ch.tie.gradle.plugins.json2md.model;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public enum TableHeader {
   // @formatter:off
@@ -41,6 +40,6 @@ public enum TableHeader {
   public static List<TableHeader> tableHeaders(Set<TableHeader> includedHeaders) {
     return TableHeader.ALL_HEADERS.stream()
         .filter(header -> includedHeaders.stream().anyMatch(included -> included.equals(header)))
-        .collect(Collectors.toList());
+        .toList();
   }
 }
