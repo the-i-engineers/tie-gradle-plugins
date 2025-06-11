@@ -3,7 +3,6 @@ package ch.tie.gradle.plugins.json2md.model;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import ch.tie.gradle.plugins.json2md.Json2mdConverterUtil;
 
@@ -78,8 +77,7 @@ public class Property implements ToMarkdown {
 
   @Override
   public String toMarkdown() {
-    return Json2mdConverterUtil.tableRow(
-        tableHeaders.stream().map(rowMapper::get).map(Supplier::get).collect(Collectors.toList()));
+    return Json2mdConverterUtil.tableRow(tableHeaders.stream().map(rowMapper::get).map(Supplier::get).toList());
   }
 
   public Property setTableHeaders(List<TableHeader> tableHeaders) {

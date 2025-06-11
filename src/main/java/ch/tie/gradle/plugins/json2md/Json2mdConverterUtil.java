@@ -13,7 +13,6 @@ public class Json2mdConverterUtil {
 
   private static final String HEADER = "#";
   private static final String SPACE = " ";
-  private static final String NEW_LINE = "\n";
   private static final String TABLE_SEPARATOR = "-----";
   private static final String TABLE_DELIMITER = " | ";
 
@@ -26,10 +25,6 @@ public class Json2mdConverterUtil {
 
   public static String metadata(SpringConfigurationMetadata metadata, String projectName) {
     return h1(projectName) + metadata.toMarkdown();
-  }
-
-  public static String paragraph(String content) {
-    return content + NEW_LINE.repeat(2);
   }
 
   public static String h1(String heading) {
@@ -45,13 +40,14 @@ public class Json2mdConverterUtil {
   }
 
   public static String tableHeader(List<TableHeader> tableHeaders) {
-    return headers(tableHeaders.stream().map(TableHeader::description).collect(Collectors.toList()));
+    return headers(tableHeaders.stream().map(TableHeader::description).toList());
   }
 
   private static String headers(List<String> headers) {
     String[] separators = new String[headers.size()];
     Arrays.fill(separators, TABLE_SEPARATOR);
-    return addSideBorders(String.join(TABLE_DELIMITER, headers)) + newLine() + addSideBorders(String.join(TABLE_DELIMITER, separators)) + newLine();
+    return addSideBorders(String.join(TABLE_DELIMITER, headers)) + newLine() + addSideBorders(
+        String.join(TABLE_DELIMITER, separators)) + newLine();
   }
 
   public static String tableRow(List<String> data) {
@@ -78,11 +74,7 @@ public class Json2mdConverterUtil {
     return Arrays.stream(lines).filter(StringUtils::isNotBlank).collect(Collectors.joining(SPACE));
   }
 
-  public static String tab() {
-    return SPACE.repeat(2);
-  }
-
-  private static String addSideBorders(String content){
+  private static String addSideBorders(String content) {
     return TABLE_DELIMITER_START + content + TABLE_DELIMITER;
   }
 }
