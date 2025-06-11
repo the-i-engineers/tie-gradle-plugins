@@ -10,8 +10,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import ch.tie.gradle.plugins.json2md.model.SpringConfigurationMetadata;
 
 class Json2mdReaderTest {
@@ -24,7 +22,7 @@ class Json2mdReaderTest {
   @BeforeEach
   void setupJson2mdReaderTest() {
     testUtil = new TestUtil();
-    json2mdReader = new Json2mdReader(testUtil.createTestProject(), new ObjectMapper());
+    json2mdReader = Json2mdBeanFactory.json2mdReader(testUtil.createTestProject());
   }
 
   @Test
@@ -45,6 +43,7 @@ class Json2mdReaderTest {
 
     SpringConfigurationMetadata springConfigurationMetadata = json2mdReader.readMetadata(target);
 
+    assertThat(springConfigurationMetadata, notNullValue());
     assertThat(springConfigurationMetadata.toMarkdown(), is(""));
   }
 

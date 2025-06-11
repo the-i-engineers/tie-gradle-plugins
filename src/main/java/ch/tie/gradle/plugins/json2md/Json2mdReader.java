@@ -30,7 +30,8 @@ public class Json2mdReader {
       return SpringConfigurationMetadata.noMetadata();
     }
     try {
-      return objectMapper.readValue(file, SpringConfigurationMetadata.class);
+      return objectMapper.readValue(file,
+          SpringConfigurationMetadata.class);
     } catch (IOException e) {
       project.getLogger().warn(e.getMessage(), e);
       return SpringConfigurationMetadata.noMetadata();
