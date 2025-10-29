@@ -1,7 +1,7 @@
 package ch.tie.gradle.plugins.json2md;
 
-import static org.gradle.internal.impldep.org.hamcrest.CoreMatchers.is;
-import static org.gradle.internal.impldep.org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
