@@ -1,0 +1,13 @@
+version: 2
+updates:
+  - package-ecosystem: "gradle"
+    directories:
+      - "/"
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: github-actions
+    directories:
+      - "/"
+    schedule:
+      interval: "daily"
