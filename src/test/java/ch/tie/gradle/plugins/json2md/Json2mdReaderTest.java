@@ -1,8 +1,8 @@
 package ch.tie.gradle.plugins.json2md;
 
-import static org.gradle.internal.impldep.org.hamcrest.CoreMatchers.is;
-import static org.gradle.internal.impldep.org.hamcrest.CoreMatchers.notNullValue;
-import static org.gradle.internal.impldep.org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
 
 import java.io.IOException;
 
