@@ -32,7 +32,7 @@ jobs:
 
       - name: publish test reports
         if: success() || failure()
-        uses: dorny/test-reporter@v2.2.0
+        uses: dorny/test-reporter@v2.3.0
         with:
           name: test report
           path: '**/build/test-results/test/TEST-*.xml'
