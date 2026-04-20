@@ -12,7 +12,6 @@ public class Json2mdBeanFactory {
 
   public static Json2mdReader json2mdReader(Project project) {
     JsonMapper jsonMapper = new JsonMapper();
-    // ignore unknown properties in Json
     return new Json2mdReader(project, jsonMapper);
   }
 
