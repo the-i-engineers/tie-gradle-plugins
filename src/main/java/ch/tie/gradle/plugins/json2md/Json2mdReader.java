@@ -2,25 +2,25 @@ package ch.tie.gradle.plugins.json2md;
 
 
 import java.io.File;
-import java.io.IOException;
 
 import javax.inject.Inject;
 
 import org.gradle.api.Project;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import ch.tie.gradle.plugins.json2md.model.SpringConfigurationMetadata;
+
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 public class Json2mdReader {
 
-  private final ObjectMapper objectMapper;
+  private final JsonMapper jsonMapper;
   private final Project project;
 
   @Inject
-  public Json2mdReader(Project project, ObjectMapper objectMapper) {
+  public Json2mdReader(Project project, JsonMapper jsonMapper) {
     this.project = project;
-    this.objectMapper = objectMapper;
+    this.jsonMapper = jsonMapper;
   }
 
   public SpringConfigurationMetadata readMetadata(String metadataPath) {
@@ -30,9 +30,8 @@ public class Json2mdReader {
       return SpringConfigurationMetadata.noMetadata();
     }
     try {
-      return objectMapper.readValue(file,
-          SpringConfigurationMetadata.class);
-    } catch (IOException e) {
+      return jsonMapper.readValue(file, SpringConfigurationMetadata.class);
+    } catch (JacksonException e) {
       project.getLogger().warn(e.getMessage(), e);
       return SpringConfigurationMetadata.noMetadata();
     }
