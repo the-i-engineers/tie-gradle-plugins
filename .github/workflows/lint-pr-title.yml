@@ -12,4 +12,170 @@ jobs:
       pull-requests: write
       contents: read
     steps:
-      - uses: the-i-engineers/reusable-workflows/.github/actions/lint-pr-title@1ecc812f2a2272afcd67c6407dfdf35fae7fc648 # 5.1.0
+      - uses: amannn/action-semantic-pull-request@48f256284bd46cdaab1048c3721360e808335d50 # v6.1.1
+        id: lint
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          types: |
+            feat
+            fix
+            style
+            docs
+            chore
+            ci
+            refactor
+            test
+            perf
+            ${{ inputs.additional_types }}
+          requireScope: false
+          disallowScopes: |
+          subjectPattern: ^.+$
+          subjectPatternError: >
+            The subject "{subject}" must not be empty.
+            Use the format: type: description or type(scope): description
+  
+      - name: Apply commit-type label
+        if: always() && steps.lint.outcome == 'success' && github.event.pull_request != null
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            const title = context.payload.pull_request.title;
+            const prNumber = context.payload.pull_request.number;
+            const { owner, repo } = context.repo;
+  
+            // Detect breaking change: '!' in title or BREAKING CHANGE footer in PR body
+            const body = context.payload.pull_request.body || '';
+            const isBreaking = /^[a-z]+(\([^)]+\))?!:/.test(title) ||
+                               /^BREAKING CHANGE:/m.test(body);
+  
+            // Extract type prefix
+            const match = title.match(/^([a-z]+)(\([^)]+\))?[!]?:/);
+            const type = match ? match[1] : null;
+  
+            if (!type) return;
+  
+            // Always apply the commit-type label; add breaking-change on top when applicable
+            const labelsToApply = isBreaking ? [type, 'breaking-change'] : [type];
+  
+            const colours = {
+              'breaking-change': 'b60205',
+              'feat':    '0075ca',
+              'fix':     'e4e669',
+              'perf':    'c5def5',
+              'refactor':'d4c5f9',
+              'ci':      '006b75',
+              'docs':    '0052cc',
+              'chore':   'e0e0e0',
+              'test':    'bfd4f2',
+              'style':   'fef2c0',
+            };
+  
+            // Ensure each label exists, then apply all at once
+            for (const name of labelsToApply) {
+              try {
+                await github.rest.issues.createLabel({ owner, repo, name, color: colours[name] || 'ededed' });
+              } catch (e) {
+                if (e.status !== 422) throw e; // 422 = already exists
+              }
+            }
+  
+            await github.rest.issues.addLabels({ owner, repo, issue_number: prNumber, labels: labelsToApply });
+            core.info(`Applied labels [${labelsToApply.join(', ')}] to PR #${prNumber}`);
+  
+      - if: failure() && steps.lint.conclusion == 'failure'
+        shell: bash
+        env:
+          ADDITIONAL_TYPES: ${{ inputs.additional_types }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          # Sanitize PR_TITLE for GitHub Actions workflow commands:
+          # %, \r, and \n must be percent-encoded to avoid malformed annotations.
+          SAFE_TITLE="${PR_TITLE//%/%25}"
+          SAFE_TITLE="${SAFE_TITLE//$'\r'/%0D}"
+          SAFE_TITLE="${SAFE_TITLE//$'\n'/%0A}"
+          if [[ "$PR_TITLE" =~ ^[[:space:]] ]]; then
+            echo "::error title=PR title has leading whitespace::Remove the leading space(s) before the commit type. The title starts with whitespace: \"${SAFE_TITLE}\""
+            exit 0
+          fi
+          BASE_TYPES="feat | fix | style | docs | chore | ci | refactor | test | perf"
+          EXTRA=$(printf '%s' "$ADDITIONAL_TYPES" | sed '/^[[:space:]]*$/d' | tr '\n' '|' | sed 's/|[[:space:]]*$//;s/|/ | /g')
+          if [ -n "$EXTRA" ]; then
+            ALL_TYPES="$BASE_TYPES | $EXTRA"
+          else
+            ALL_TYPES="$BASE_TYPES"
+          fi
+          echo "::error title=PR title does not follow Conventional Commits::Fix the PR title to match one of these formats: type: description or type(scope): description%0A%0AAllowed types: ${ALL_TYPES}%0AExample: feat(hub): add cert-manager IAM policy%0A%0AConventional Commits spec: https://www.conventionalcommits.org/en/v1.0.0/"
+  
+      - name: Post or update PR comment
+        if: always() && github.event.pull_request != null
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          LINT_OUTCOME: ${{ steps.lint.outcome }}
+          ERROR_MESSAGE: ${{ steps.lint.outputs.error_message }}
+          ADDITIONAL_TYPES: ${{ inputs.additional_types }}
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            const MARKER      = '<!-- lint-pr-title -->';
+            const passed      = process.env.LINT_OUTCOME === 'success';
+            const prNumber    = context.payload.pull_request.number;
+            const { owner, repo } = context.repo;
+  
+            const comments = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number: prNumber, per_page: 100 });
+            const existing = comments.find(c => c.body.includes(MARKER));
+  
+            if (passed) {
+              if (existing) {
+                await github.rest.issues.deleteComment({ owner, repo, comment_id: existing.id });
+                core.info('Lint passed — removed previous failure comment.');
+              }
+              return;
+            }
+  
+            const baseTypes = ['feat', 'fix', 'style', 'docs', 'chore', 'ci', 'refactor', 'test', 'perf'];
+            const extraTypes = (process.env.ADDITIONAL_TYPES || '').split('\n').map(t => t.trim()).filter(Boolean);
+            const allTypes = [...baseTypes, ...extraTypes];
+            const typesLine = `**Allowed types:** ${allTypes.map(t => `\`${t}\``).join(' · ')}`;
+  
+            const errorDetail = (() => {
+              const title = context.payload.pull_request?.title ?? '';
+              if (/^\s/.test(title)) {
+                const safe = title.replace(/`/g, "'");
+                return `The PR title starts with leading whitespace — remove the space(s) before the commit type.\n> Current title: \`${safe}\``;
+              }
+              return (process.env.ERROR_MESSAGE || 'The PR title format is invalid.').split('\n')[0].trim();
+            })();
+            const body = [
+              MARKER,
+              '## ❌ PR title does not follow Conventional Commits',
+              '',
+              errorDetail,
+              '',
+              '### Expected format',
+              '```',
+              'type: short description',
+              'type(scope): short description',
+              'type!: breaking change description',
+              '```',
+              '',
+              typesLine,
+              '',
+              '**Examples:**',
+              '- `feat(hub): add cert-manager IAM policy`',
+              '- `fix: correct OKE node pool shape variable`',
+              '- `style(ci): align indentation in workflow file`',
+              '',
+              '_This comment is removed automatically once the title is valid._',
+              '',
+              '📖 [Conventional Commits spec](https://www.conventionalcommits.org/en/v1.0.0/)',
+            ].join('\n');
+  
+            if (existing) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body });
+              core.info('Updated existing lint failure comment.');
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number: prNumber, body });
+              core.info('Posted lint failure comment.');
+            }
