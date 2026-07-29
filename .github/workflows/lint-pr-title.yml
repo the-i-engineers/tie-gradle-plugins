@@ -1,0 +1,15 @@
+name: Lint PR Title
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  lint-pr-title:
+    name: Lint PR Title
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+    steps:
+      - uses: the-i-engineers/reusable-workflows/.github/actions/lint-pr-title@1ecc812f2a2272afcd67c6407dfdf35fae7fc648 # 5.1.0
