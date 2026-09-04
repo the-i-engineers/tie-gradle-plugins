@@ -1,0 +1,34 @@
+name: Status Check
+
+# Local fork of the-i-engineers/reusable-workflows' status-check.yml.
+# A public repo cannot call a reusable workflow hosted in a private repo
+# (even with org-wide Actions access enabled), so this file is forked
+# locally, matching the equivalent forks in cert-manager-webhook-oci and
+# cert-sync-to-oci. Keep in sync with upstream manually.
+
+on:
+  workflow_call:
+    inputs:
+      result:
+        description: >
+          Aggregated result to gate on. Typically computed by the caller as:
+          failure if any needed job failed or was cancelled, otherwise success.
+          Use 'success' for repos with no CI jobs.
+        required: false
+        type: string
+        default: 'success'
+
+jobs:
+  status-check:
+    name: Status Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Gate
+        env:
+          RESULT: ${{ inputs.result }}
+        run: |
+          if [[ "$RESULT" != "success" && "$RESULT" != "skipped" ]]; then
+            echo "Required checks did not pass: $RESULT"
+            exit 1
+          fi
+          echo "All required checks passed."
