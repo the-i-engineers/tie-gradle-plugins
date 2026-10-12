@@ -26,6 +26,9 @@ public class Json2mdTask extends DefaultTask {
   @Input
   private List<String> excludedSources = new ArrayList<>();
 
+  @Inject
+  private String outputPath;
+
   @Input
   private String markdownFilename;
 
@@ -64,10 +67,19 @@ public class Json2mdTask extends DefaultTask {
     this.tableHeaders = tableHeaders;
   }
 
+  public String getOutputPath() {
+    return outputPath;
+  }
+
+  public void setOutputPath(String outputPath) {
+    this.outputPath = outputPath;
+  }
+
   @Inject
   public Json2mdTask(Project project, Json2mdReader json2mdReader, Json2mdWriter json2mdWriter) {
     this.project = project;
     this.markdownFilename = "ConfigurationProperties.md";
+    this.outputPath = project.getProjectDir().getPath();
     this.metadataPath =
         project.getLayout().getBuildDirectory().get().getAsFile().getPath() + "/classes/java/main/META-INF/spring-configuration-metadata.json";
     this.json2mdReader = json2mdReader;
@@ -80,6 +92,7 @@ public class Json2mdTask extends DefaultTask {
     springConfigurationMetadata.setTableHeaders(tableHeaders);
     springConfigurationMetadata.setExcludedSources(excludedSources);
     String markdown = Json2mdConverterUtil.metadata(springConfigurationMetadata, project.getName());
-    json2mdWriter.writeMarkdownFile(markdownFilename, markdown);
+    String output = String.join("/", outputPath, markdownFilename);
+    json2mdWriter.writeMarkdownFile(output, markdown);
   }
 }
