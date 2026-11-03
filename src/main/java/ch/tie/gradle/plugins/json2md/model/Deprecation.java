@@ -5,6 +5,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import ch.tie.gradle.plugins.json2md.Json2mdConverterUtil;
 
+import static ch.tie.gradle.plugins.json2md.Json2mdConverterUtil.replaceLineBreaks;
+
 public class Deprecation implements ToMarkdown {
 
   private String level = "";
@@ -20,7 +22,7 @@ public class Deprecation implements ToMarkdown {
   }
 
   public String getReason() {
-    return reason;
+    return replaceLineBreaks(reason);
   }
 
   public void setReason(String reason) {
