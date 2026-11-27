@@ -12,3 +12,20 @@ The script will:
 2. Create a new release with generated release notes and additional notes if provided.
 3. This will also push the tag to the remote repository and trigger the CI/CD workflow to publish the new version.
 
+The `cd` job in `.github/workflows/gradle-ci-cd.yml` publishes each tagged version to two repositories:
+
+| Target | Gradle task | Required secrets |
+| ----- | ----- | ----- |
+| Gradle Plugin Portal (`plugins.gradle.org`) | `publishPlugins` | `GRADLE_PUBLISH_KEY`, `GRADLE_PUBLISH_SECRET` |
+| TIE Nexus (`https://dev-repository.tie.ch/repository/maven-releases/`) | `publishAllPublicationsToTieNexusRepository` | `NEXUS_USERNAME`, `NEXUS_PASSWORD` (account with deploy rights) |
+
+TIE builds that resolve `ch.tie.gradle.plugins` only from Nexus need the Nexus publication.
+Versions released before the Nexus step existed are not in Nexus. To publish one manually, check out its tag and copy the `publishing` block that configures `tieNexus` from the current `build.gradle` into that checkout's `build.gradle`. Keep the checkout on the original tag and leave its version calculation and sources unchanged; then run:
+
+```shell
+./gradlew publishAllPublicationsToTieNexusRepository -PnexusUsername=<user> -PnexusPassword=<password>
+```
+
+Nexus release repositories reject redeploying an existing version.
+
+

@@ -29,6 +29,19 @@ repositories {
     gradlePluginPortal()
 }
 
+publishing {
+    repositories {
+        maven {
+            name = "tieNexus"
+            url = "https://dev-repository.tie.ch/repository/maven-releases/"
+            credentials {
+                username = providers.gradleProperty("nexusUsername").orNull
+                password = providers.gradleProperty("nexusPassword").orNull
+            }
+        }
+    }
+}
+
 dependencies {
     implementation "tools.jackson.core:jackson-databind:3.3.0"
     implementation "commons-io:commons-io:2.22.0"
