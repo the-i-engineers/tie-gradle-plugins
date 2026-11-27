@@ -20,7 +20,7 @@ The `cd` job in `.github/workflows/gradle-ci-cd.yml` publishes each tagged versi
 | TIE Nexus (`https://dev-repository.tie.ch/repository/maven-releases/`) | `publishAllPublicationsToTieNexusRepository` | `NEXUS_USERNAME`, `NEXUS_PASSWORD` (account with deploy rights) |
 
 TIE builds that resolve `ch.tie.gradle.plugins` only from Nexus need the Nexus publication.
-Versions released before the Nexus step existed are not in Nexus. To publish one manually, check out its tag and run:
+Versions released before the Nexus step existed are not in Nexus. To publish one manually, check out its tag and copy the `publishing` block that configures `tieNexus` from the current `build.gradle` into that checkout's `build.gradle`. Keep the checkout on the original tag and leave its version calculation and sources unchanged; then run:
 
 ```shell
 ./gradlew publishAllPublicationsToTieNexusRepository -PnexusUsername=<user> -PnexusPassword=<password>
